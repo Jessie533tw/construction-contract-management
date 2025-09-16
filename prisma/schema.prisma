@@ -1,0 +1,347 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  name      String
+  role      Role     @default(USER)
+  department String?
+  phone     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdProjects Project[] @relation("CreatedBy")
+  managedProjects Project[] @relation("ProjectManager") 
+  inquiries       Inquiry[] @relation("InquiryCreatedBy")
+  purchaseOrders  PurchaseOrder[] @relation("PurchaseCreatedBy")
+  progressUpdates ProgressUpdate[] @relation("UpdatedBy")
+
+  @@map("users")
+}
+
+model Project {
+  id            String      @id @default(uuid())
+  projectNumber String      @unique
+  name          String
+  description   String?
+  location      String?
+  startDate     DateTime?
+  endDate       DateTime?
+  budget        Decimal     @db.Decimal(15,2)
+  status        ProjectStatus @default(PLANNING)
+  contractNumber String?    @unique
+  
+  createdById   String
+  createdBy     User        @relation("CreatedBy", fields: [createdById], references: [id])
+  managerId     String?
+  manager       User?       @relation("ProjectManager", fields: [managerId], references: [id])
+  
+  budgetApproved Boolean     @default(false)
+  budgetLockedAt DateTime?
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  budgetItems    BudgetItem[]
+  inquiries      Inquiry[]
+  purchaseOrders PurchaseOrder[]
+  progressItems  ProgressItem[]
+  
+  @@map("projects")
+}
+
+model BudgetItem {
+  id          String  @id @default(uuid())
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  category    String
+  itemName    String
+  description String?
+  quantity    Decimal @db.Decimal(10,3)
+  unit        String
+  unitPrice   Decimal @db.Decimal(10,2)
+  totalPrice  Decimal @db.Decimal(15,2)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  inquiryItems InquiryItem[]
+  
+  @@map("budget_items")
+}
+
+model Supplier {
+  id          String  @id @default(uuid())
+  code        String  @unique
+  name        String
+  contactName String?
+  email       String?
+  phone       String?
+  address     String?
+  taxId       String?
+  isActive    Boolean @default(true)
+  
+  rating      Int?    @default(5)
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  quotations  Quotation[]
+  purchaseOrders PurchaseOrder[]
+  
+  @@map("suppliers")
+}
+
+model Inquiry {
+  id            String      @id @default(uuid())
+  inquiryNumber String      @unique
+  projectId     String
+  project       Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String?
+  dueDate       DateTime
+  status        InquiryStatus @default(DRAFT)
+  
+  createdById   String
+  createdBy     User        @relation("InquiryCreatedBy", fields: [createdById], references: [id])
+  
+  sentAt        DateTime?
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  inquiryItems  InquiryItem[]
+  quotations    Quotation[]
+  
+  @@map("inquiries")
+}
+
+model InquiryItem {
+  id           String     @id @default(uuid())
+  inquiryId    String
+  inquiry      Inquiry    @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  budgetItemId String?
+  budgetItem   BudgetItem? @relation(fields: [budgetItemId], references: [id])
+  
+  itemName     String
+  description  String?
+  quantity     Decimal    @db.Decimal(10,3)
+  unit         String
+  specifications String?
+  
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  quotationItems QuotationItem[]
+  
+  @@map("inquiry_items")
+}
+
+model Quotation {
+  id            String         @id @default(uuid())
+  quotationNumber String       @unique
+  inquiryId     String
+  inquiry       Inquiry        @relation(fields: [inquiryId], references: [id], onDelete: Cascade)
+  supplierId    String
+  supplier      Supplier       @relation(fields: [supplierId], references: [id])
+  
+  validUntil    DateTime
+  totalAmount   Decimal        @db.Decimal(15,2)
+  status        QuotationStatus @default(RECEIVED)
+  notes         String?
+  
+  receivedAt    DateTime       @default(now())
+  
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  quotationItems QuotationItem[]
+  purchaseOrders PurchaseOrder[]
+  
+  @@map("quotations")
+}
+
+model QuotationItem {
+  id              String        @id @default(uuid())
+  quotationId     String
+  quotation       Quotation     @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  inquiryItemId   String
+  inquiryItem     InquiryItem   @relation(fields: [inquiryItemId], references: [id])
+  
+  unitPrice       Decimal       @db.Decimal(10,2)
+  totalPrice      Decimal       @db.Decimal(15,2)
+  deliveryDays    Int?
+  notes           String?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  @@map("quotation_items")
+}
+
+model PurchaseOrder {
+  id                String           @id @default(uuid())
+  poNumber          String           @unique
+  projectId         String
+  project           Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  supplierId        String
+  supplier          Supplier         @relation(fields: [supplierId], references: [id])
+  quotationId       String?
+  quotation         Quotation?       @relation(fields: [quotationId], references: [id])
+  
+  totalAmount       Decimal          @db.Decimal(15,2)
+  status            PurchaseOrderStatus @default(DRAFT)
+  
+  paymentTerms      String?
+  deliveryDate      DateTime?
+  actualDeliveryDate DateTime?
+  
+  notes             String?
+  
+  createdById       String
+  createdBy         User             @relation("PurchaseCreatedBy", fields: [createdById], references: [id])
+  
+  approvedAt        DateTime?
+  
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  purchaseItems     PurchaseOrderItem[]
+  progressItems     ProgressItem[]
+  
+  @@map("purchase_orders")
+}
+
+model PurchaseOrderItem {
+  id              String        @id @default(uuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  
+  itemName        String
+  description     String?
+  quantity        Decimal       @db.Decimal(10,3)
+  unit            String
+  unitPrice       Decimal       @db.Decimal(10,2)
+  totalPrice      Decimal       @db.Decimal(15,2)
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  @@map("purchase_order_items")
+}
+
+model ProgressItem {
+  id              String         @id @default(uuid())
+  projectId       String
+  project         Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  purchaseOrderId String?
+  purchaseOrder   PurchaseOrder? @relation(fields: [purchaseOrderId], references: [id])
+  
+  taskName        String
+  description     String?
+  category        ProgressCategory
+  
+  plannedStartDate DateTime?
+  plannedEndDate  DateTime?
+  actualStartDate DateTime?
+  actualEndDate   DateTime?
+  
+  progressPercent Decimal       @default(0) @db.Decimal(5,2)
+  status          ProgressStatus @default(NOT_STARTED)
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  updates         ProgressUpdate[]
+  
+  @@map("progress_items")
+}
+
+model ProgressUpdate {
+  id              String       @id @default(uuid())
+  progressItemId  String
+  progressItem    ProgressItem @relation(fields: [progressItemId], references: [id], onDelete: Cascade)
+  
+  progressPercent Decimal      @db.Decimal(5,2)
+  status          ProgressStatus
+  notes           String?
+  photos          String[]     @default([])
+  
+  updatedById     String
+  updatedBy       User         @relation("UpdatedBy", fields: [updatedById], references: [id])
+  
+  createdAt       DateTime     @default(now())
+  
+  @@map("progress_updates")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  USER
+  VIEWER
+}
+
+enum ProjectStatus {
+  PLANNING
+  BUDGETING
+  APPROVED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum InquiryStatus {
+  DRAFT
+  SENT
+  RESPONDED
+  CLOSED
+}
+
+enum QuotationStatus {
+  RECEIVED
+  UNDER_REVIEW
+  SELECTED
+  REJECTED
+}
+
+enum PurchaseOrderStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  SENT_TO_SUPPLIER
+  CONFIRMED
+  IN_PROGRESS
+  DELIVERED
+  COMPLETED
+  CANCELLED
+}
+
+enum ProgressCategory {
+  ENGINEERING
+  MATERIAL
+  CONSTRUCTION
+  INSPECTION
+  DOCUMENTATION
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  DELAYED
+  BLOCKED
+}
