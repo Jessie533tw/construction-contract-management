@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+    domains:
+      - domain: construction-contract-management.zeabur.app
+    expose: 3001
+  postgres:
+    type: postgres
+    version: "15"

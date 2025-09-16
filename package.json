@@ -10,7 +10,10 @@
     "client:build": "cd client && npm run build",
     "build": "npm run client:build",
     "install-client": "cd client && npm install",
-    "postinstall": "npm run install-client",
+    "postinstall": "npm run install-client && npx prisma generate",
+    "db:migrate": "npx prisma migrate deploy",
+    "db:push": "npx prisma db push",
+    "db:generate": "npx prisma generate",
     "demo": "node server.js"
   },
   "keywords": [
@@ -47,6 +50,9 @@
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "repository": {
     "type": "git",
