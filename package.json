@@ -4,17 +4,8 @@
   "description": "建設公司發包管理系統 - 完整的詢價、比價、採購、進度管理解決方案",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
     "start": "node minimal-server.js",
-    "client": "cd client && npm start",
-    "client:build": "cd client && npm run build",
-    "build": "npm run client:build",
-    "install-client": "cd client && npm install",
-    "postinstall": "npm run install-client && npx prisma generate",
-    "db:migrate": "npx prisma migrate deploy",
-    "db:push": "npx prisma db push",
-    "db:generate": "npx prisma generate",
-    "demo": "node server.js"
+    "dev": "node minimal-server.js"
   },
   "keywords": [
     "construction",
@@ -32,27 +23,10 @@
   "author": "Construction Management Team",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2",
-    "prisma": "^5.6.0",
-    "@prisma/client": "^5.6.0",
-    "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.7",
-    "puppeteer": "^21.5.2",
-    "moment": "^2.29.4",
-    "uuid": "^9.0.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
+    "express": "^4.18.2"
   },
   "engines": {
     "node": ">=16.0.0"
-  },
-  "prisma": {
-    "seed": "node prisma/seed.js"
   },
   "repository": {
     "type": "git",
