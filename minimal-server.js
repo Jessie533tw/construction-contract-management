@@ -6,13 +6,22 @@ const PORT = process.env.PORT || 8080;
 app.get('/', (req, res) => {
     res.send(`
     <html>
-        <head><title>建設發包管理系統</title></head>
-        <body>
-            <h1>🏗️ 建設發包管理系統</h1>
-            <p>✅ 伺服器運行正常</p>
-            <p>📊 端口: ${PORT}</p>
-            <p>🕐 時間: ${new Date().toLocaleString()}</p>
-            <a href="/health">健康檢查</a>
+        <head>
+            <title>建設發包管理系統 - 極簡版本</title>
+            <meta charset="UTF-8">
+        </head>
+        <body style="font-family: Arial, sans-serif; margin: 40px; background: #f0f8ff;">
+            <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #2c3e50;">🏗️ 建設發包管理系統</h1>
+                <h2 style="color: #e74c3c;">✅ 極簡測試版本 - 版本 ${Date.now()}</h2>
+                <p><strong>📊 端口:</strong> ${PORT}</p>
+                <p><strong>🕐 時間:</strong> ${new Date().toLocaleString()}</p>
+                <p><strong>🔍 Node 版本:</strong> ${process.version}</p>
+                <p><strong>🌐 主機名:</strong> ${require('os').hostname()}</p>
+                <hr>
+                <p style="color: #27ae60; font-size: 18px;"><strong>如果您看到這個頁面，表示我們的伺服器正在正常運行！</strong></p>
+                <a href="/health" style="background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">🔍 健康檢查</a>
+            </div>
         </body>
     </html>
     `);
