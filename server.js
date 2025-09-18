@@ -28,13 +28,13 @@ app.use('/api/quotations', quotationRoutes);
 app.use('/api/purchases', purchaseRoutes);
 app.use('/api/progress', progressRoutes);
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));
-  
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  });
-}
+// 提供靜態檔案
+app.use(express.static(path.join(__dirname)));
+
+// 主頁路由
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.get('/api/health', (req, res) => {
   res.json({ message: '建設發包管理系統運行正常', timestamp: new Date().toISOString() });

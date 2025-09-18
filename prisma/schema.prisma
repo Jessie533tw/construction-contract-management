@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -37,7 +37,7 @@ model Project {
   location      String?
   startDate     DateTime?
   endDate       DateTime?
-  budget        Decimal     @db.Decimal(15,2)
+  budget        Float
   status        ProjectStatus @default(PLANNING)
   contractNumber String?    @unique
   
@@ -68,10 +68,10 @@ model BudgetItem {
   category    String
   itemName    String
   description String?
-  quantity    Decimal @db.Decimal(10,3)
+  quantity    Float
   unit        String
-  unitPrice   Decimal @db.Decimal(10,2)
-  totalPrice  Decimal @db.Decimal(15,2)
+  unitPrice   Float
+  totalPrice  Float
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -138,7 +138,7 @@ model InquiryItem {
   
   itemName     String
   description  String?
-  quantity     Decimal    @db.Decimal(10,3)
+  quantity     Float
   unit         String
   specifications String?
   
@@ -159,7 +159,7 @@ model Quotation {
   supplier      Supplier       @relation(fields: [supplierId], references: [id])
   
   validUntil    DateTime
-  totalAmount   Decimal        @db.Decimal(15,2)
+  totalAmount   Float
   status        QuotationStatus @default(RECEIVED)
   notes         String?
   
@@ -181,8 +181,8 @@ model QuotationItem {
   inquiryItemId   String
   inquiryItem     InquiryItem   @relation(fields: [inquiryItemId], references: [id])
   
-  unitPrice       Decimal       @db.Decimal(10,2)
-  totalPrice      Decimal       @db.Decimal(15,2)
+  unitPrice       Float
+  totalPrice      Float
   deliveryDays    Int?
   notes           String?
   
@@ -232,10 +232,10 @@ model PurchaseOrderItem {
   
   itemName        String
   description     String?
-  quantity        Decimal       @db.Decimal(10,3)
+  quantity        Float
   unit            String
-  unitPrice       Decimal       @db.Decimal(10,2)
-  totalPrice      Decimal       @db.Decimal(15,2)
+  unitPrice       Float
+  totalPrice      Float
   
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -259,7 +259,7 @@ model ProgressItem {
   actualStartDate DateTime?
   actualEndDate   DateTime?
   
-  progressPercent Decimal       @default(0) @db.Decimal(5,2)
+  progressPercent Float         @default(0)
   status          ProgressStatus @default(NOT_STARTED)
   
   createdAt       DateTime      @default(now())
@@ -275,7 +275,7 @@ model ProgressUpdate {
   progressItemId  String
   progressItem    ProgressItem @relation(fields: [progressItemId], references: [id], onDelete: Cascade)
   
-  progressPercent Decimal      @db.Decimal(5,2)
+  progressPercent Float
   status          ProgressStatus
   notes           String?
   photos          String[]     @default([])
