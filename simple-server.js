@@ -241,12 +241,12 @@ app.use((req, res) => {
     res.status(404).json({ success: false, error: '找不到請求的資源' });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`🏗️  建設發包管理系統伺服器啟動成功！`);
-    console.log(`📊 伺服器運行在: http://localhost:${PORT}`);
-    console.log(`🌐 Web 介面: http://localhost:${PORT}`);
-    console.log(`🔗 API 端點: http://localhost:${PORT}/api`);
-    console.log(`📋 健康檢查: http://localhost:${PORT}/api/health`);
+    console.log(`📊 伺服器運行在: http://0.0.0.0:${PORT}`);
+    console.log(`🌐 Web 介面: http://0.0.0.0:${PORT}`);
+    console.log(`🔗 API 端點: http://0.0.0.0:${PORT}/api`);
+    console.log(`📋 健康檢查: http://0.0.0.0:${PORT}/api/health`);
 });
 
 module.exports = app;
