@@ -2,6 +2,13 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 記錄所有請求
+app.use((req, res, next) => {
+    console.log(`📥 收到請求: ${req.method} ${req.url} from ${req.ip}`);
+    console.log(`📋 Headers:`, req.headers);
+    next();
+});
+
 // 最基本的路由
 app.get('/', (req, res) => {
     res.send(`
