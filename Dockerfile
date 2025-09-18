@@ -18,10 +18,9 @@ RUN mkdir -p uploads
 
 # 設置環境變數
 ENV NODE_ENV=production
-ENV PORT=3001
 
-# 暴露端口
-EXPOSE 3001
+# 暴露端口（讓 Zeabur 自動分配）
+EXPOSE 8080
 
-# 啟動應用（直接執行 simple-server.js）
-CMD ["node", "simple-server.js"]
+# 啟動應用（使用極簡版本測試）
+CMD ["node", "minimal-server.js"]
