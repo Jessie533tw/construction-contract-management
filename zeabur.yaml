@@ -5,9 +5,9 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3001
+      JWT_SECRET: zeabur_production_jwt_secret_change_this_in_real_deployment
+      COMPANY_NAME: 建設公司
+      COMPANY_EMAIL: admin@construction.com
     domains:
       - domain: construction-contract-management.zeabur.app
     expose: 3001
-  postgres:
-    type: postgres
-    version: "15"
