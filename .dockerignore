@@ -9,3 +9,20 @@ README.md
 coverage
 .vscode
 .idea
+
+# Prisma 相關檔案（避免部署時的問題）
+prisma/
+*.db
+*.db-journal
+
+# 備份檔案
+package-backup.json
+package-simple.json
+package-original.json
+
+# 日誌和快取
+*.log
+.npm/
+.cache/
+tmp/
+temp/
