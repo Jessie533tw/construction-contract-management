@@ -9,6 +9,4 @@ services:
       COMPANY_NAME: 建設發包管理系統
       COMPANY_EMAIL: admin@construction-demo.com
       PASSWORD: PxtBr891A52MeRHJv3KNno04U6OzZDg7
-    domains:
-      - domain: construction-contract-management.zeabur.app
     expose: 3001
