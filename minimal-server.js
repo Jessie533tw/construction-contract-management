@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+console.log(`🔧 環境變數 PORT: ${process.env.PORT}`);
+console.log(`📊 使用端口: ${PORT}`);
+
 // 記錄所有請求
 app.use((req, res, next) => {
     console.log(`📥 收到請求: ${req.method} ${req.url} from ${req.ip}`);
