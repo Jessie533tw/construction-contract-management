@@ -1,0 +1,43 @@
+{
+  "name": "construction-contract-management",
+  "version": "1.0.0",
+  "description": "建設公司發包管理系統 - 完整的詢價、比價、採購、進度管理解決方案",
+  "main": "simple-server.js",
+  "scripts": {
+    "start": "node simple-server.js",
+    "dev": "node simple-server.js"
+  },
+  "keywords": [
+    "construction",
+    "contract",
+    "management",
+    "procurement",
+    "inquiry",
+    "purchase",
+    "schedule",
+    "建設",
+    "發包",
+    "管理",
+    "採購"
+  ],
+  "author": "Construction Management Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "moment": "^2.29.4",
+    "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/construction-company/contract-management.git"
+  },
+  "bugs": {
+    "url": "https://github.com/construction-company/contract-management/issues"
+  },
+  "homepage": "https://github.com/construction-company/contract-management#readme"
+}

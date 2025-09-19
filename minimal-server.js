@@ -9,6 +9,15 @@ app.use((req, res, next) => {
     next();
 });
 
+// 錯誤處理中間件
+app.use((err, req, res, next) => {
+    console.error('❌ 應用錯誤:', err);
+    res.status(500).json({
+        error: '伺服器內部錯誤',
+        message: process.env.NODE_ENV === 'production' ? '請稍後再試' : err.message
+    });
+});
+
 // 最基本的路由
 app.get('/', (req, res) => {
     res.send(`
@@ -43,12 +52,24 @@ app.get('/health', (req, res) => {
     });
 });
 
+// 404 處理
+app.use('*', (req, res) => {
+    console.log(`⚠️  404 - 未找到路由: ${req.method} ${req.originalUrl}`);
+    res.status(404).json({
+        error: '頁面未找到',
+        path: req.originalUrl
+    });
+});
+
 // 啟動伺服器，監聽所有介面
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 極簡伺服器啟動成功！`);
     console.log(`📊 端口: ${PORT}`);
     console.log(`🌐 監聽: 0.0.0.0:${PORT}`);
     console.log(`✅ 狀態: 運行中`);
+}).on('error', (err) => {
+    console.error('❌ 伺服器啟動失敗:', err);
+    process.exit(1);
 });
 
 module.exports = app;

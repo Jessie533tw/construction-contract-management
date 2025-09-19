@@ -2,8 +2,11 @@ services:
   app:
     build:
       dockerfile: Dockerfile
+    ports:
+      - 3000:3000
     environment:
       NODE_ENV: production
+      PORT: 3000
       JWT_SECRET: construction_management_jwt_secret_2024_secure_key
       COMPANY_NAME: 建設發包管理系統
       COMPANY_EMAIL: admin@construction-demo.com
